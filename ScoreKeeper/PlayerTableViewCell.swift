@@ -12,7 +12,6 @@ class PlayerTableViewCell: UITableViewCell {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
-    @IBOutlet weak var stepperValue: UIStepper!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,14 +25,9 @@ class PlayerTableViewCell: UITableViewCell {
     }
 
     
-    var firstTime = true
     func update(with player: Player) {
-        if firstTime {
-            stepperValue.value = Double(player.score)
-            firstTime = false
-        }
         nameLabel.text = player.name
-        scoreLabel.text = "Score: \(Int(stepperValue.value))"
+        scoreLabel.text = "Score: \(player.score)"
     }
     
     

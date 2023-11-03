@@ -9,7 +9,8 @@ import UIKit
 
 class PlayerTableViewController: UITableViewController {
 
-    var players = PlayerController.shared.players.sorted { $0 > $1 }
+    var players = PlayerController.shared.players
+    var indexSelected = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +21,17 @@ class PlayerTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
+    @IBAction func minusButtonPushed(_ sender: Any) {
+        players[indexSelected].score -= 1
+        players = players.sorted { $0 < $1 }
+        tableView.reloadData()
+    }
+    @IBAction func plusButtonPushed(_ sender: Any) {
+        players[indexSelected].score += 1
+        players = players.sorted { $0 < $1 }
+        tableView.reloadData()
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -31,13 +43,11 @@ class PlayerTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return players.count
     }
-
-    @IBAction func stepperChange(_ sender: Any) {
-        tableView.reloadData()
-    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "scores", for: indexPath) as! PlayerTableViewCell
         cell.update(with: players[indexPath.row])
+        
         // Configure the cell...
 
         return cell
@@ -51,9 +61,14 @@ class PlayerTableViewController: UITableViewController {
     @IBAction func unwindToPlayerTableView(_ unwindSegue: UIStoryboardSegue) {
         guard let viewController = unwindSegue.source as? AddEditViewController, let player = viewController.player else { return }
         players.append(player)
+        players = players.sorted { $0 < $1 }
         tableView.reloadData()
     }
     
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        indexSelected = indexPath.row
+        return indexPath
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -78,13 +93,8 @@ class PlayerTableViewController: UITableViewController {
     // Override to support rearranging the table view.
     
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
+    
+    
 
     /*
     // MARK: - Navigation
